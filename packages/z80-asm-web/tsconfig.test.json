@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist-tests"
+  },
+  "include": [
+    "src/assembler/*.ts"
+  ]
+}

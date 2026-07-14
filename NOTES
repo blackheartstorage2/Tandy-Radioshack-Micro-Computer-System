@@ -1,0 +1,14 @@
+
+(Internal notes for developers.)
+
+To add a dependency:
+
+    npm -w packages/OUR_PACKAGE_NAME install --save THEIR_PACKAGE_NAME
+
+This includes our own cross-dependencies.
+
+---
+
+To make a new release of trs80-tool, bump the version in its package.json
+and commit/push. Github will build the binaries.
+

@@ -1,0 +1,829 @@
+/* Global settings. */
+:root {
+    /* Solarized colors */
+    --base03:    #002b36;
+    --base02:    #073642;
+    --base01:    #586e75;
+    --base00:    #657b83;
+    --base0:     #839496;
+    --base1:     #93a1a1;
+    --base2:     #eee8d5;
+    --base3:     #fdf6e3;
+    --yellow:    #b58900;
+    --orange:    #cb4b16;
+    --red:       #dc322f;
+    --magenta:   #d33682;
+    --violet:    #6c71c4;
+    --blue:      #268bd2;
+    --cyan:      #2aa198;
+    --green:     #859900;
+
+    --very-dark: #00212A;
+
+    --arrow-color: rgb(255 255 255 / 12%);
+}
+
+.light-mode {
+    --background: var(--base3);
+    --background-highlights: var(--base2);
+    --foreground: var(--base00);
+    --foreground-emphasized: var(--base01);
+    --foreground-secondary: var(--base1);
+    --accent-color: var(--red);
+    --accent-foreground-color: var(--base3);
+}
+
+.dark-mode {
+    --background: var(--base03);
+    --background-highlights: var(--base02);
+    --foreground: var(--base0);
+    --foreground-emphasized: var(--base1);
+    --foreground-secondary: var(--base01);
+    --accent-color: var(--cyan);
+    --accent-foreground-color: var(--base3);
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background: var(--very-dark);
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+}
+
+body.presentation-mode {
+    font-size: 20px;
+}
+
+.content {
+    box-sizing: border-box;
+    padding: 0 30px 0 0;
+    height: 100vh;
+    display: flex;
+    gap: 30px;
+}
+
+.left-pane {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-self: stretch;
+}
+
+.right-pane {
+    align-self: center;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pill-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    color: white;
+    background-color: rgba(133, 153, 0, 0.8); /* --green */
+    padding: 5px 10px 4px 10px;
+    border-radius: 999px;
+    font-size: 9pt;
+    user-select: none;
+    cursor: default;
+}
+
+.pill-notice-hidden {
+    display: none;
+}
+
+.pill-notice-has-click {
+    cursor: pointer;
+}
+
+.pill-notice-error {
+    background-color: rgba(220, 50, 47, 0.8); /* --red */
+}
+
+.pill-notice-arrow {
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.pill-notice-arrow-hidden {
+    display: none;
+}
+
+.left-pane {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-self: stretch;
+}
+
+/* ------------------------------------------------------------------------- */
+
+.inspector {
+    background-color: var(--background);
+    color: var(--foreground);
+    border-radius: 20px;
+    padding: 20px 30px;
+    font-family: 'Roboto Mono', monospace;
+
+    body:not([data-debounced-running-state="paused"]) & {
+        display: none;
+    }
+
+    body[data-screen-size=small] & {
+        font-size: 80%;
+    }
+
+    body[data-screen-size=medium] & {
+        font-size: 90%;
+    }
+}
+
+/* ------------------------------------------------------------------------- */
+
+.z80-inspector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    body[data-z80-inspector="hidden"] & {
+        display: none;
+    }
+}
+
+.z80-inspector-label,
+.z80-inspector-clock-label,
+.z80-inspector-time-label {
+    color: var(--cyan);
+    white-space: pre;
+}
+
+.z80-inspector-value,
+.z80-inspector-clock-value,
+.z80-inspector-time-value {
+    color: var(--blue);
+    white-space: pre-wrap;
+}
+
+.z80-inspector-value {
+    cursor:pointer;
+}
+
+.z80-inspector-extra {
+    color: var(--yellow);
+    white-space: pre-wrap;
+}
+
+.z80-inspector-changed {
+    color: var(--red);
+}
+
+/* ------------------------------------------------------------------------- */
+
+.memory-inspector {
+    body[data-memory-inspector="hidden"] & {
+        display: none;
+    }
+
+    .memory-inspector-rows {
+        max-height: 100px;
+        overflow-y: scroll;
+        white-space: pre;
+
+        .memory-inspector-highlight {
+            background: var(--background-highlights);
+        }
+
+        .memory-inspector-address {
+            color: var(--cyan);
+        }
+
+        .memory-inspector-hex {
+            color: var(--blue);
+        }
+
+        .memory-inspector-ascii {
+            color: var(--yellow);
+        }
+
+        .memory-inspector-ascii-unprintable {
+            color: var(--foreground-secondary);
+        }
+
+        .memory-inspector-annotation {
+            color: var(--violet);
+        }
+
+        .memory-inspector-outside-annotation {
+            opacity: 0.2;
+        }
+    }
+}
+
+/* ------------------------------------------------------------------------- */
+
+.stack-inspector {
+    display: grid;
+    grid-template-columns: auto auto 5ch 1fr;
+    column-gap: 10px;
+
+    body[data-stack-inspector="hidden"] & {
+        display: none;
+    }
+
+    .stack-inspector-empty {
+        color: var(--foreground-secondary);
+        font-style: italic;
+    }
+
+    .stack-inspector-row {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+
+        &.stack-inspector-call {
+            border-bottom: 1px dashed var(--foreground-secondary);
+        }
+
+        .stack-inspector-address {
+            color: var(--cyan);
+        }
+
+        .stack-inspector-hex-value {
+            color: var(--blue);
+            cursor: pointer;
+        }
+
+        .stack-inspector-decimal-value {
+            color: var(--blue);
+        }
+
+        .stack-inspector-note {
+            color: var(--yellow);
+        }
+    }
+}
+
+/* ------------------------------------------------------------------------- */
+
+.fdc-inspector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+
+    body[data-fdc-inspector="hidden"] & {
+        display: none;
+    }
+}
+
+.fdc-inspector-bottom {
+    grid-column: 1/-1;
+    max-width: 50ch;
+}
+
+.fdc-inspector-label {
+    color: var(--cyan);
+    white-space: pre;
+}
+
+.fdc-inspector-value-extra {
+    display: inline-flex;
+    gap: 1ch;
+}
+
+.fdc-inspector-value {
+    color: var(--blue);
+    white-space: pre-wrap;
+}
+
+.fdc-inspector-extra {
+    color: var(--yellow);
+    white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------------------- */
+
+.menubar-menu {
+    color: var(--foreground-emphasized);
+    background-color: var(--very-dark);
+    user-select: none;
+
+    display: none;
+}
+
+.menubar-menu.menubar-depth-0,
+.menubar-entry.menubar-open > .menubar-menu {
+    display: flex;
+}
+
+.menubar-depth-0 {
+    flex-direction: row;
+    padding-left: 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.menubar-depth-1,
+.menubar-depth-2 {
+    flex-direction: column;
+    position: absolute;
+}
+
+.menubar-depth-1 {
+    z-index: 20;
+    top: 100%;
+    left: 0;
+}
+
+.menubar-depth-2 {
+    z-index: 30;
+    top: 0;
+    left: 100%;
+}
+
+.menubar-depth-0,
+.menubar-depth-1,
+.menubar-depth-2 {
+    box-shadow: rgba(99, 99, 99, 0.2) 0 2px 8px 0;
+}
+
+.menubar-entry {
+    display: flex;
+    align-items: baseline;
+    flex-direction: row;
+
+    padding: 7px 25px 7px 15px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.menubar-depth-0 > .menubar-entry {
+    padding-right: 15px;
+}
+
+.menubar-entry:not(.menubar-entry-suppress-hover):hover,
+.menubar-entry.menubar-open,
+.menubar-entry.menubar-flash {
+
+    color: var(--base3);
+    background-color: var(--blue);
+}
+
+.menubar-text {
+    flex-grow: 1;
+}
+
+.menubar-checkmark {
+    display: none;
+    visibility: hidden;
+    padding-right: 9px;
+}
+
+.menubar-any-checked > * > .menubar-checkmark {
+    display: block;
+}
+
+.menubar-checked > .menubar-checkmark {
+    visibility: visible;
+}
+
+.menubar-hotkey {
+    padding-left: 4em;
+    color: var(--foreground-secondary);
+}
+
+.menubar-entry:not(.menubar-entry-suppress-hover):hover > .menubar-hotkey {
+    color: var(--base2);
+}
+
+.menubar-separator {
+    height: 0;
+    border-top: 1px solid var(--foreground-secondary);
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 4px 0;
+}
+
+.menubar-parent {
+    position: relative;
+}
+
+.menubar-arrow {
+    font-size: 7pt;
+    padding-left: 30px;
+    align-self: center;
+}
+
+/* ------------------------------------------------------------------------- */
+
+.modal-dialog {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-size: 18pt;
+    box-shadow: black 0 20px 100px;
+    border: none;
+    border-radius: 10px;
+}
+
+.modal-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-prompt {
+    margin-bottom: 2em;
+}
+
+.dialog-button-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.dialog-button-row button {
+    color: var(--foreground);
+    background-color: var(--background-highlights);
+    border: solid 1px var(--cyan);
+    border-radius: 5px;
+    padding: .5em 1em;
+    font-size: 18pt;
+}
+
+.dialog-button-row button:hover {
+    color: var(--foreground);
+    background-color: var(--background-highlights);
+}
+
+.dialog-button-row button.dialog-dont-save-button {
+    border: solid 1px var(--red);
+}
+
+.dialog-spacer {
+    flex-grow: 1;
+}
+
+/* ------------------------------------------------------------------------- */
+
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    padding: 20px 10px 0 10px;
+}
+
+.editor-container {
+    flex-grow: 1;
+    position: relative;
+}
+
+.editor {
+    /* make sure the editor is exactly the size of its parent regardless of content */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.cm-editor {
+    height: 100%;
+}
+
+.inline-pill {
+    color: var(--base3);
+    border-radius: 999px;
+    padding: 2px 10px 1px 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-family: "Roboto", sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    /* center vertically */
+    position: relative;
+    top: -.2ex;
+}
+
+.cm-screenshotEdit {
+    background-color: var(--violet);
+}
+
+.cm-variablePill {
+    background-color: var(--background-highlights);
+    color: var(--foreground-emphasized);
+    border: 1px solid var(--foreground-secondary);
+}
+
+.cm-screenshotLine {
+    color: var(--base3);
+    background-color: #cb4b1650;
+}
+
+.presentation-mode .cm-screenshotEdit {
+    font-size: 15px;
+}
+
+.gutter-addresses {
+    /* "XXXX " = 5 characters */
+    width: 5ch;
+    cursor: default;
+    color: rgb(from var(--cyan) r g b / 0.6);
+
+    .gutter-address {
+        &.gutter-can-be-breakpoint {
+            cursor: pointer;
+            color: var(--cyan);
+        }
+        &.gutter-breakpoint {
+            color: var(--red);
+        }
+    }
+}
+
+.gutter-bytecode {
+    /* "XX XX XX ... " = 13 characters */
+    width: 13ch;
+    color: var(--blue);
+}
+
+.gutter-timing {
+    /* "XXX +XX/XX " = 11 characters */
+    width: 11ch;
+    color: var(--yellow);
+    white-space: pre;
+}
+
+.hidable-gutter .cm-gutterElement {
+    padding-right: 1ch;
+}
+
+.cm-lineNumbers .cm-gutterElement {
+    padding-right: 1ch !important;
+}
+
+.currentPcGutter, .currentPcLine {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.cm-line:has(.cm-foldPlaceholder) {
+    color: white;
+    background-color: var(--blue);
+}
+
+.hover-tooltip {
+    color: rgba(256, 256, 256, 0.8);
+    background-color: var(--blue);
+    padding: 8px 10px;
+    max-width: 15em;
+}
+
+.hover-tooltip-header {
+    margin-bottom: 0.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.hover-tooltip-instruction {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.hover-tooltip-modifiers {
+    color: rgba(256, 256, 256, 0.5);
+}
+
+.hover-tooltip-description {
+    margin-bottom: 0.5em;
+}
+
+.hover-tooltip-clocks {
+    margin-bottom: 0.5em;
+}
+
+.hover-tooltip-clocks-label {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.hover-tooltip-clocks-value {
+    /* nothing */
+}
+
+/* -------------------------------------------------------------------------------------------- */
+
+.screen-editor-control-panel1,
+.screen-editor-control-panel2 {
+    position: absolute;
+    display: flex;
+    gap: 10px;
+    font-size: 10pt;
+}
+
+.screen-editor-control-panel1 {
+    top: -70px;
+}
+
+.screen-editor-control-panel2 {
+    top: -35px;
+}
+
+.screen-editor-button-group {
+    display: flex;
+    align-items: center;
+}
+
+.screen-editor-button-group input[type=radio],
+.screen-editor-button-group input[type=checkbox] {
+    display: none;
+}
+
+.screen-editor-button-group label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 10px;
+    height: 26px;
+    box-sizing: content-box;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--base03);
+    border-top: 1px solid var(--base03);
+    border-right: 1px solid var(--base03);
+    border-bottom: 1px solid var(--base03);
+    border-left: none;
+    cursor: pointer;
+    user-select: none;
+}
+
+.screen-editor-button-group label .screen-editor-selected-icon {
+    display: none;
+}
+
+.screen-editor-button-group label:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-left: 1px solid var(--base03);
+}
+
+.screen-editor-button-group label:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.screen-editor-button-group input[type=radio]:checked + label,
+.screen-editor-button-group input[type=checkbox]:checked + label,
+.screen-editor-button-group label:active {
+    background-color: var(--blue);
+    color: var(--base3);
+}
+
+.screen-editor-button-group input[type=radio]:checked + label .screen-editor-selected-icon,
+.screen-editor-button-group input[type=checkbox]:checked + label .screen-editor-selected-icon,
+.screen-editor-button-group label:active .screen-editor-selected-icon {
+    display: inline;
+}
+
+.screen-editor-button-group input[type=radio]:checked + label .screen-editor-normal-icon,
+.screen-editor-button-group input[type=checkbox]:checked + label .screen-editor-normal-icon,
+.screen-editor-button-group label:active .screen-editor-normal-icon {
+    display: none;
+}
+
+.screen-editor-status-panel {
+    position: absolute;
+    bottom: -30px;
+    display: flex;
+    gap: 10px;
+    font-size: 10pt;
+    color: var(--foreground);
+}
+
+.presentation-mode .screen-editor-status-panel {
+    font-size: 12.5pt;
+}
+
+/* -------------------------------------------------------------------------------------------- */
+
+.audio-playback-dialog-box {
+    border: none;
+    padding: 0;
+    color: var(--foreground);
+    background-color: var(--background);
+    max-width: 550px;
+}
+
+.audio-playback-dialog-box::backdrop {
+    background: rgb(0 0 0 / 70%);
+}
+
+.audio-playback-title-bar {
+    background: var(--background-highlights);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.audio-playback-title {
+    color: var(--accent-color);
+    font-size: 30px;
+    font-weight: 100;
+}
+
+.audio-playback-close {
+    cursor: pointer;
+}
+
+.audio-playback-close-background {
+    fill: var(--background);
+}
+
+.audio-playback-close-foreground {
+    fill: var(--foreground);
+}
+
+.audio-playback-close:hover .audio-playback-close-foreground {
+    fill: var(--foreground-emphasized);
+}
+
+.audio-playback-contents {
+    padding: 15px 15px 30px 15px;
+}
+
+.audio-playback-instructions {
+    margin-bottom: 25px;
+    line-height: 1.3;
+}
+
+.audio-playback-instructions p {
+    margin: 0;
+}
+
+.audio-playback-instructions p + p {
+    margin-top: 1em;
+}
+
+.audio-playback-instructions code {
+    font-weight: bold;
+    color: var(--foreground-emphasized);
+    background-color: var(--background-highlights);
+    padding: 3px 5px;
+    border-radius: 5px;
+}
+
+.audio-playback-player {
+    display: block;
+    outline: none;
+    width: 100%;
+    filter: opacity(0.8);
+}
+
+/* ------------------------------------------------------------------------- */
+
+.about-dialog {
+    padding: 2em 5em;
+    background: var(--background);
+    color: var(--foreground);
+    border: 3px solid var(--foreground-secondary);
+    border-radius: 16px;
+    text-align: center;
+
+    &::backdrop {
+        background: rgb(0 0 0 / 70%);
+    }
+}
+
+.about-dialog-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+.about-dialog-byline {
+    font-size: 18px;
+    font-style: italic;
+    margin-bottom: 25px;
+}
+.about-dialog-version {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.about-dialog-date {
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.about-dialog-close-button {
+    background: var(--background-highlights);
+    color: var(--foreground-emphasized);
+    font-size: 16px;
+    padding: 7px 15px;
+    outline: 0;
+    border: 1px solid var(--foreground-secondary);
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+}

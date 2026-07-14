@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+
+import math
+
+res = 64
+
+print("static int8_t DIR_TABLE_X[] = {")
+print("    " + ",".join(str(round(math.cos(dir/64.0*2*math.pi)*32)) for dir in range(res)))
+print("};")
+print("static int8_t DIR_TABLE_Y[] = {")
+print("    " + ",".join(str(round(-math.sin(dir/64.0*2*math.pi)*32)) for dir in range(res)))
+print("};")
+print("// abs(255/v)")
+print("static uint8_t SIGNED_DIV_TABLE[] = {")
+print("    " + ",".join(str(0 if v == 0 else 255//v if v < 128 else 255//abs(v - 256)) for v in range(256)))
+print("};")
+print("static uint8_t DIST_TO_HEIGHT[] = {")
+print("    " + ",".join(str(24 if v == 0 else max(1, min(24, 255//v))) for v in range(256)))
+print("};")
+
+print("        .org ($ + 255) & 0xFF00")
+print("DIR_TABLE_X:")
+for i in range(res//8):
+    print("\t.db " + ",".join(str(round(math.cos(dir/64.0*2*math.pi)*32)) for dir in range(i*8, (i + 1)*8)))
+print("        .org ($ + 255) & 0xFF00")
+print("DIR_TABLE_Y:")
+for i in range(res//8):
+    print("\t.db " + ",".join(str(round(-math.sin(dir/64.0*2*math.pi)*32)) for dir in range(i*8, (i + 1)*8)))
+print("        .org ($ + 255) & 0xFF00")
+print("SIGNED_DIV_TABLE: ; abs(255/v)")
+for i in range(256//8):
+    print("\t.db " + ",".join(str(0 if v == 0 else 255//v if v < 128 else 255//abs(v - 256)) for v in range(i*8, (i + 1)*8)))
+print("        .org ($ + 255) & 0xFF00")
+print("DIST_TO_HEIGHT:")
+for i in range(256//8):
+    print("\t.db " + ",".join(str(24 if v == 0 else max(1, min(25, 255//v)) - 1) for v in range(i*8, (i + 1)*8)))

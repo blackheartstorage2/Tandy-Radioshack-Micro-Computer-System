@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TRS-80 IDE Documentation</title>
+        <link href="../style.css" rel="stylesheet">
+    </head>
+    <body class="dark-mode">
+        <section>
+            <h1>TRS-80 IDE Documentation</h1>
+
+            <p>The
+            <a href="https://www.my-trs-80.com/ide/">Integrated Development Environment (IDE)</a>
+            documented here lets
+            you write Z80 assembly language and see it running within a few milliseconds
+            on a TRS-80 emulator.</p>
+
+            <h2>Editor</h2>
+
+            <p>The code is on the left, the emulator is on the right, and the
+            pull-down menu is on top. As you type into the editor, the code is
+            assembled on the fly. The machine language bytes are shown on the left
+            next to each line. With every re-assembly, the TRS-80 emulator on the right
+            is wiped clean, brought to a known state, and your program is loaded and
+            run.</p>
+
+            <p>Try this simple program:</p>
+
+            <pre>        .org 0x8000
+
+        ld hl,15360
+        ld a,191
+        ld (hl),a
+
+stop:
+        jp stop</pre>
+
+            <p>The <tt>stop</tt> label must be in the first column, the rest
+            must not be in the first column, and the indent is typically 8 spaces.
+            It loads at 0x8000 (the start of the top 32K of RAM) and puts
+            a graphic character block at the top-left of the screen. You should
+            see this block appears as soon as you've finished typing the
+            program. Try changing the character (<tt>191</tt>) to different values
+            and watch the emulator update.</p>
+
+            <h2>Screenshot Editor</h2>
+
+            <p>In TRS-80 programs, screenshots such as splash screens and game
+            mazes are often hard-coded into the assembly language code using
+            a sequence of byte statements, like this:</p>
+
+            <pre>        .byte 0x87,0x8B,0x8C,0x8C,0x8C,0x8C,0x83,0x83
+        .byte 0x83,0x89,0x8C,0x8C,0x8C,0x8C,0x8C,0x8C</pre>
+
+            <p>These are tedious to write and edit. To simplify making
+            these, the IDE provides a built-in paint program. Simply
+            mark your bytes with these start and end comments:</p>
+
+            <pre>        ; Screenshot
+        .byte 0x87,0x8B,0x8C,0x8C,0x8C,0x8C,0x83,0x83
+        .byte 0x83,0x89,0x8C,0x8C,0x8C,0x8C,0x8C,0x8C
+        ; End screenshot</pre>
+
+            <p>A <tt>EDIT</tt> button will appear to the right of the
+            <tt>Screenshot</tt> comment. Click it to launch the paint
+            program, which will replace the emulator's screen on the right.
+            Click and drag in the screen to paint. Above the screen are various
+            standard paint tools, most of which should be self-explanatory.
+            Hover over each tool to see a hint about what it does.</p>
+
+            <p>To save the painted screen back into the source code, click the
+            check mark button. To cancel, click the circle-with-a-slash button
+            to the right of it.</p>
+
+            <p>The coordinates shown below the screen can be useful when
+            constructing screens. Hold the <tt>Shift</tt> key while dragging
+            out a new line, rectangle, or ellipse to get 45-degree lines,
+            squares, or circles. The copy button not only copies the screen (or
+            selected area) for later pasting within the paint program, but also
+            copies an image of the area to your system clipboard for pasting
+            into other applications.</p>
+
+            <p>The program has infinite undo/redo, so don't be afraid to
+            experiment!</p>
+
+            <h2 id="folding">Folding</h2>
+
+            <p>Entire sections of your source code can be folded, meaning visually
+            collapsed so they're no longer visible in the editor. This is useful when
+            you're working on a large program and want to focus on a smaller part
+            of it.</p>
+
+            <p>To tell the editor where each foldable section begins, put a comment
+            at the beginning of the line followed by three hyphens, followed by
+            a description of that section:</p>
+
+            <pre>;--- Constants.
+SCREEN_WIDTH equ 64
+SCREEN_HEIGHT equ 16
+
+;--- Main entry point.
+        .org 5200h
+main:
+        di
+        ...</pre>
+
+            <p>Each such line will show a little arrow to the left of it. Click the
+            arrow to collapse and expand that section. The <tt>Code</tt> menu has
+            a <tt>Folding</tt> sub-menu with useful folding-related commands that
+            collapse all sections, expand all sections, and toggle the expansion
+            of the section you're in.</p>
+
+            <h2>Assembler</h2>
+
+            <p>The assembler attempts to handle the union of all past Z80 assembler
+            syntaxes. For example, it handles both <tt>org</tt> and <tt>.org</tt>
+            directives. For numeric literals in non-decimal bases, it handles
+            C-style prefixes (<tt>0x3C00</tt>, <tt>0b10001010</tt>), assembler-style
+            prefixes (<tt>$3C00</tt>, <tt>%10001010</tt>), and assembler-style
+            suffixes (<tt>3C00h</tt>, <tt>10001010b</tt>). It handles the mnemonic
+            variants <a href="https://48k.ca/zmac.html#zsyn">described in the zmac docs</a>,
+            except for the <tt>RST</tt> ones.</p>
+        </section>
+    </body>
+</html>

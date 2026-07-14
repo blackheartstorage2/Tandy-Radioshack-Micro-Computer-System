@@ -1,0 +1,28 @@
+{
+  "name": "z80-inst",
+  "version": "2.0.1",
+  "description": "Database of instructions for the Z80",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "private": true,
+  "repository": "https://github.com/lkesteloot/trs80.git",
+  "author": "Lawrence Kesteloot <lk@teamten.com> (https://www.teamten.com/lawrence/)",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "generate": "tsc --project opcodes && node opcodes/dist/opcodes/GenerateCode.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "z80"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "typedoc": "^0.27.6"
+  },
+  "dependencies": {
+    "z80-base": "^2.0.1"
+  }
+}

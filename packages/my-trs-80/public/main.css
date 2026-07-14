@@ -1,0 +1,1391 @@
+/* Global settings. */
+:root {
+    /* Solarized colors */
+    --base03:    #002b36;
+    --base02:    #073642;
+    --base01:    #586e75;
+    --base00:    #657b83;
+    --base0:     #839496;
+    --base1:     #93a1a1;
+    --base2:     #eee8d5;
+    --base3:     #fdf6e3;
+    --yellow:    #b58900;
+    --orange:    #cb4b16;
+    --red:       #dc322f;
+    --magenta:   #d33682;
+    --violet:    #6c71c4;
+    --blue:      #268bd2;
+    --cyan:      #2aa198;
+    --green:     #859900;
+
+    /* Horizontal margin for screens that are open. */
+    --horiz-margin: 80px;
+
+    /* How long buttons colors/borders take to transition on hover. */
+    --button-transition-time: 0.1s;
+
+    /* Height of buttons */
+    --button-height: 32px;
+}
+.light-mode {
+    --background: var(--base3);
+    --background-highlights: var(--base2);
+    --foreground: var(--base00);
+    --foreground-emphasized: var(--base01);
+    --foreground-secondary: var(--base1);
+    --accent-color: var(--red);
+    --accent-foreground-color: var(--base3);
+}
+.dark-mode {
+    --background: var(--base03);
+    --background-highlights: var(--base02);
+    --foreground: var(--base0);
+    --foreground-emphasized: var(--base1);
+    --foreground-secondary: var(--base01);
+    --accent-color: var(--cyan);
+    --accent-foreground-color: var(--base3);
+}
+
+* {
+    /* For theme changes. */
+    transition: color .25s ease-in-out, background-color .25s ease-in-out;
+}
+
+body {
+    --icon-color: var(--foreground-secondary);
+
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+
+    height: 100vh;
+}
+
+body, input, textarea {
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 16px;
+}
+
+input::placeholder {
+    opacity: 50%;
+}
+
+/* Our own overrides for the material design icons. */
+.material-icons-override {
+    color: var(--icon-color);
+    transition: color var(--button-transition-time) ease-in-out;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.main-computer-screen {
+    flex-grow: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+i.material-icons-round {
+    /* Don't allow selecting the text. */
+    user-select: none;
+}
+
+/* Slightly reduce size of these icons. Normal is 24px. */
+.smaller-icon {
+    font-size: 20px;
+}
+
+.authentic-cursor {
+    /* The cursor font is tall and affects vertical centering of the text, so take it out of the
+    flow. Be sure to add some margin to make space for it. */
+    position: absolute;
+
+    /* This is loaded because we use the TRS-80 emulator, which uses it for its editor. */
+    font-family: "TreasureMIII64C", monospace;
+    font-size: 20px;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.navbar {
+    height: 50px;
+    background-color: var(--background-highlights);
+    padding: 3px 20px;
+    font-size: 20pt;
+    font-weight: 100;
+    color: var(--accent-color);
+
+    display: grid;
+    grid: "home-button . library-button theme-button sign-in-out-button" auto /
+        auto 1fr auto auto auto;
+    gap: 15px;
+    align-items: center;
+}
+
+.navbar .home-button:link,
+.navbar .home-button:visited,
+.navbar .home-button:active {
+    grid-area: home-button;
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+.navbar .library-button {
+    grid-area: library-button;
+}
+
+.navbar .theme-button {
+    grid-area: theme-button;
+}
+
+.navbar .sign-in-button,
+.navbar .sign-out-button {
+    grid-area: sign-in-out-button;
+}
+
+body.signed-in .navbar .sign-in-button {
+    display: none;
+}
+
+body.signed-out .navbar .sign-out-button {
+    display: none;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+button {
+    border: 1px solid var(--foreground-secondary);
+    background-color: transparent;
+    color: var(--foreground-secondary);
+    border-radius: 999px;
+    cursor: pointer;
+
+    transition: border var(--button-transition-time) ease-in-out,
+    color var(--button-transition-time) ease-in-out,
+    opacity var(--button-transition-time) ease-in-out;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+button:hover:not(:disabled) {
+    border-color: var(--foreground-emphasized);
+    color: var(--foreground-emphasized);
+}
+
+button:focus,
+button:active {
+    outline: 0;
+}
+
+button:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+button.text-button {
+    padding: 4px 13px;
+    min-height: var(--button-height);
+    font-size: 13px;
+}
+
+button.icon-button {
+    width: var(--button-height);
+    height: var(--button-height);
+    padding: 0;
+    border-radius: 50%;
+}
+
+button i {
+    transition: color var(--button-transition-time) ease-in-out,
+        opacity var(--button-transition-time) ease-in-out;
+}
+
+.icon-button:hover:not(:disabled) .material-icons-override {
+    color: var(--foreground-emphasized);
+}
+
+.tag {
+    position: relative; /* For absolute-positioned exclude mark. */
+
+    border-radius: 999px;
+    color: white;
+    font-size: 11px;
+    padding: 2px 7px;
+
+    white-space: nowrap;
+    user-select: none;
+
+    display: flex;
+    gap: 3px; /* Between text and delete icon. */
+    align-items: center; /* To align delete icon and text. */
+}
+
+.tag i {
+    /* Delete icon size */
+    font-size: 13px;
+}
+
+.tag-clickable {
+    cursor: pointer;
+}
+
+.tag-faint {
+    opacity: 30%;
+}
+
+/* See computeTagColor() */
+.tag-0 { background-color: var(--green); }
+.tag-1 { background-color: var(--orange); }
+.tag-2 { background-color: var(--magenta); }
+.tag-3 { background-color: var(--violet); }
+.tag-4 { background-color: var(--blue); }
+.tag-5 { background-color: var(--cyan); }
+.tag-trash { background-color: var(--red); }
+
+.tag .tag-exclude-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 40px;
+    transform: translate(-50%, -50%);
+    color: black;
+    opacity: 50%;
+}
+
+@keyframes spin {
+    from {
+        transform:rotate(360deg);
+    }
+    to {
+        transform:rotate(0deg);
+    }
+}
+
+@keyframes rainbow {
+    0% { color: var(--yellow); }
+    12.5% { color: var(--orange); }
+    25% { color: var(--red); }
+    37.5% { color: var(--magenta); }
+    50% { color: var(--violet); }
+    62.5% { color: var(--blue); }
+    75% { color: var(--cyan); }
+    87.5% { color: var(--green); }
+    100% { color: var(--yellow); }
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.panel-background,
+.dialog-box-background {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    overflow: hidden hidden;
+
+    z-index: 10;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .20s ease-in-out, visibility .20s ease-in-out;
+}
+
+.dialog-box-background {
+    z-index: 20;
+}
+
+.panel-background.panel-shown,
+.dialog-box-background.dialog-box-shown {
+    opacity: 1;
+    visibility: visible;
+}
+
+.panel-positioning {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+    right: 50px;
+    bottom: 50px;
+
+    overflow: visible visible;
+}
+
+.panel {
+    --side-padding: 20px;
+
+    /* Start off-screen */
+    position: absolute;
+    left: 100vw;
+    top: 100vh;
+    right: -100vw;
+    bottom: -100vh;
+    transition: left 0.5s ease-in-out, right 0.5s ease-in-out, top 0.2s ease-in-out, bottom 0.2s ease-in-out;
+
+    /* So that backgrounds of nested divs don't mess with our rounded corners. */
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background-color: var(--background-highlights);
+    color: var(--foreground);
+
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr); /* h1 and panel-content */
+}
+
+.panel-background.panel-shown .panel {
+    top: 0;
+    bottom: 0;
+}
+
+.panel h1 {
+    padding: var(--side-padding) var(--side-padding) 10px var(--side-padding);
+    margin: 0;
+    font-size: 28pt;
+    font-weight: 100;
+    color: var(--accent-color);
+
+    display: grid;
+    align-items: center;
+    gap: 10px;
+    /* Set grid pattern in panel-specific rule. */
+}
+
+.panel h1 > div + span {
+    /* More space between back button and header text. */
+    padding-left: 10px;
+}
+
+/* Make scrollbars blend in better. */
+.panel ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.panel ::-webkit-scrollbar-thumb {
+    background: var(--background-highlights);
+    border-radius: 999px;
+}
+
+.panel .action-bar {
+    padding: var(--side-padding);
+    margin: 0;
+    min-height: 34px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+.panel .action-bar .action-bar-spacer {
+    flex-grow: 1;
+}
+
+.dialog-box-background {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-box-background .dialog-box-frame {
+    --side-padding: 20px;
+
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--background);
+    color: var(--foreground);
+
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr); /* h1 and content */
+
+    position: relative;
+    top: 100vh;
+    transition: top 0.2s ease-in-out;
+}
+
+.dialog-box-background.dialog-box-shown .dialog-box-frame {
+    top: 0;
+}
+
+.dialog-box-background .dialog-box-frame h1 {
+    padding: 10px;
+    margin: 0;
+    font-size: 28pt;
+    font-weight: 100;
+    background-color: var(--background-highlights);
+    color: var(--accent-color);
+    text-align: center;
+}
+
+.dialog-box-background .dialog-box-frame .dialog-box-content-frame {
+    padding: 20px;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.page-tabs-container {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr); /* page-tabs and tab-content */
+}
+
+.page-tabs {
+    padding: 5px var(--side-padding) 0 var(--side-padding);
+
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.page-tabs > div {
+    box-sizing: border-box;
+    padding: 9px 20px 7px 20px;
+    cursor: pointer;
+}
+
+.page-tabs > div.page-tab-active {
+    background-color: var(--background);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: default;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.sign-in-instructions {
+    max-width: 250px;
+    margin-bottom: 2em;
+    text-align: center;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.library-panel h1 {
+    grid-template-columns: 1fr auto auto;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.your-files-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto; /* content (files or empty-library) and action-bar */
+}
+
+.your-files-tab .files {
+    background-color: var(--background);
+    overflow: auto;
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    column-gap: var(--side-padding);
+    row-gap: 40px;
+    align-content: start;
+}
+
+.your-files-tab .file {
+    cursor: default;
+    /* For long URLs that would force the box to be larger. */
+    overflow-wrap: break-word;
+}
+
+.your-files-tab .file .screenshots > :not(:first-child) {
+    display: none;
+}
+
+.your-files-tab .file .screenshots > * {
+    border-radius: 10px;
+    max-width: 100%;
+}
+
+.your-files-tab .file .screenshots.missing {
+    opacity: 30%;
+}
+
+.your-files-tab .file .name {
+    font-weight: 800;
+    color: var(--accent-color);
+    margin-top: 5px;
+}
+
+.your-files-tab .file .name .release-year {
+    font-weight: 100;
+    color: var(--foreground);
+    font-size: 80%;
+    margin-left: 3px;
+}
+
+.your-files-tab .file .filename {
+    font-family: "Roboto Mono", monospace;
+    white-space: pre;
+    overflow: hidden;
+}
+
+.your-files-tab .file .note {
+    font-size: 80%;
+    margin-top: 5px;
+    color: var(--foreground-secondary);
+}
+
+.your-files-tab .file .tags {
+    margin-top: 10px;
+    display: flex;
+    flex-flow: row wrap;
+    gap: 5px;
+}
+
+.your-files-tab .file .buttons {
+    margin: 15px 0;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: start;
+    gap: 10px;
+}
+
+.your-files-tab .empty-library {
+    background-color: var(--background);
+    padding: var(--side-padding);
+    overflow: hidden;
+
+    display: grid;
+    grid:
+        "...... demon" 1fr
+        "header demon" auto
+        "...... demon" 50px
+        " body  demon" auto
+        "...... demon" 1.2fr /
+         4fr    3fr;
+    column-gap: 40px;
+}
+
+.your-files-tab .empty-library h2 {
+    grid-area: header;
+    margin: 0;
+    font-size: 20pt;
+    font-weight: 100;
+    color: var(--accent-color);
+    text-align: right;
+}
+
+.your-files-tab .empty-library article {
+    grid-area: body;
+    margin: 0;
+    font-size: 14pt;
+    font-weight: 100;
+    color: var(--foreground);
+    text-align: right;
+}
+
+.your-files-tab .empty-library img {
+    grid-area: demon;
+    align-self: center;
+}
+
+.your-files-tab .empty-library article code {
+    font-family: "Roboto Mono", monospace;
+    color: var(--blue);
+}
+
+.your-files-tab .action-bar .tag-editor {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.your-files-tab .action-bar .search-string {
+    /* Make space after "Search:". */
+    margin-left: 0.4em;
+
+    white-space: pre-wrap;
+}
+
+.your-files-tab .action-bar .search-button i {
+    /* Make space for the cursor, which is positioned absolutely and takes no space. */
+    margin-left: 5px;
+}
+
+.your-files-tab .action-bar .search-string,
+.your-files-tab .action-bar .search-button .authentic-cursor {
+
+    color: var(--blue);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.retro-store-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr); /* retro-store-apps */
+}
+
+.retro-store-tab .retro-store-apps {
+    background-color: var(--background);
+    overflow: auto;
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--side-padding);
+}
+
+.retro-store-tab .retro-store-app {
+    cursor: default;
+}
+
+.retro-store-tab .retro-store-app .screenshot {
+    width: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.retro-store-tab .retro-store-app .button-set {
+    margin: 10px 0;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: auto auto;
+    justify-content: left;
+}
+
+.retro-store-tab .retro-store-app .name {
+    font-weight: 800;
+    color: var(--accent-color);
+    margin-bottom: 3px;
+}
+
+.retro-store-tab .retro-store-app .version {
+    font-weight: 100;
+    color: var(--foreground);
+    font-size: 80%;
+}
+
+.retro-store-tab .retro-store-app .release-year {
+    font-weight: 100;
+    color: var(--foreground);
+    font-size: 80%;
+    margin-left: 3px;
+}
+
+.retro-store-tab .retro-store-app .description {
+    font-size: 80%;
+    margin-top: 5px;
+    color: var(--foreground-secondary);
+}
+
+.signed-out .retro-store-app .import-button {
+    display: none;
+}
+
+.retro-store-tab .retro-store-more {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    min-height: 200px;
+}
+
+.retro-store-tab .retro-store-more i {
+    font-size: 60px;
+    opacity: .2;
+
+    animation: spin 1s infinite linear, rainbow 2s infinite linear;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.file-panel h1 {
+    grid-template-columns: auto 1fr auto;
+}
+
+.file-info-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto; /* contents and action-bar */
+}
+
+.file-panel-form-container {
+    background-color: var(--background);
+    padding: var(--side-padding);
+    overflow-y: hidden;
+}
+
+.file-panel-form {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 2fr;
+    grid-template-rows: auto auto auto auto auto 1fr;
+    column-gap: 20px;
+    row-gap: 20px;
+    overflow-y: auto;
+
+    .radio-button-row {
+        display: flex;
+        gap: 8x;
+
+        .radio-button {
+            color: var(--foreground);
+            background: var(--background-highlights);
+            cursor: pointer;
+            border-radius: 999px;
+            padding: 2px 7px;
+            white-space: nowrap;
+            user-select: none;
+
+            input {
+                display: none;
+            }
+
+            &:has(input:checked) {
+                color: white;
+                background: var(--blue);
+            }
+        }
+
+        .radio-button-gap {
+            width: 8px;
+        }
+    }
+}
+
+.file-panel-form label {
+    display: block;
+    color: var(--foreground-secondary);
+    font-size: 80%;
+    grid-column: span 2;
+
+    &.release-year, &.shared {
+        grid-column: span 1;
+    }
+}
+
+.file-panel-form input,
+.file-panel-form textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    color: var(--foreground-emphasized);
+    background-color: var(--background-highlights);
+    border: none;
+    border-radius: 3px;
+}
+
+.file-panel-form input,
+.file-panel-form textarea {
+
+    margin-top: 5px;
+}
+
+.file-panel-form .tags-editor,
+.file-panel-form .radio-button-row {
+    margin-top: 10px;
+}
+
+.file-panel-form input:disabled,
+.file-panel-form textarea:disabled {
+    background-color: transparent;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.file-panel-form .screenshots {
+    grid-column: -2 / -1;
+    grid-row: 1 / -1;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    height: max-content;
+}
+
+.file-panel-form .screenshots-instructions,
+.file-panel-form .tags-instructions {
+    margin-top: 5px;
+    font-style: italic;
+    color: var(--foreground-secondary);
+}
+
+.file-panel-form .filename input {
+    /* TODO makes the input field slightly taller than the non-mono ones */
+    font-family: "Roboto Mono", monospace;
+}
+
+.file-panel-form .note {
+    grid-column: 1 / 5;
+}
+
+.file-panel-form .misc {
+    grid-column-end: span 2;
+}
+
+.file-panel-form .tags-editor .tag-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 5px;
+    align-items: center;
+}
+
+.file-panel-form .tags-editor .new-tag-form {
+    /*margin-top: 8px;*/
+}
+
+.file-panel-form .tags-editor .new-tag-form input {
+    font-size: 12px;
+    width: 8em;
+    margin: 0;
+    border-radius: 999px;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: 0;
+}
+
+.file-panel-form .shared input {
+    display: none;
+}
+
+.file-panel-form .shared i {
+    font-size: 36px;
+    display: block;
+    cursor: pointer;
+}
+
+.file-panel-form .shared input:disabled ~ i {
+    cursor: default;
+}
+
+.file-panel-form .shared i.on-state {
+    color: var(--blue);
+}
+
+.file-panel-form .shared input:checked ~ i.off-state {
+    display: none;
+}
+
+.file-panel-form .shared input:not(:checked) ~ i.on-state {
+    display: none;
+}
+
+.file-panel-form .screenshots .screenshot {
+    width: 100%;
+    position: relative;
+}
+
+.file-panel-form .screenshots .screenshot:not(:first-child) {
+    margin-top: 10px;
+}
+
+.file-panel-form .screenshots .screenshot img {
+    width: 100%;
+}
+
+.file-panel-form .screenshots .screenshot .icon-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out;
+}
+
+.file-panel-form .screenshots .screenshot:hover .icon-button {
+    opacity: 1;
+    visibility: visible;
+}
+
+.file-panel-form .screenshots .screenshot:hover .icon-button:hover i {
+    color: var(--red);
+}
+
+.file-panel .action-bar .save-button.saving i:nth-of-type(1),
+.file-panel .action-bar .save-button.saving i:nth-of-type(3) {
+    display: none;
+}
+
+.file-panel .action-bar .save-button.success i:nth-of-type(1),
+.file-panel .action-bar .save-button.success i:nth-of-type(2) {
+    display: none;
+}
+
+.file-panel .action-bar .save-button:not(.saving):not(.success) i:nth-of-type(2),
+.file-panel .action-bar .save-button:not(.saving):not(.success) i:nth-of-type(3) {
+    display: none;
+}
+
+.file-panel .action-bar .save-button i:nth-of-type(2) {
+    animation: spin 1s infinite linear;
+}
+
+.file-panel .action-bar .save-button i:nth-of-type(3) {
+    color: var(--green);
+}
+
+.file-panel .action-bar button.save-button.saving:disabled {
+    opacity: 1;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.hexdump-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto; /* contents and action-bar */
+}
+
+.hexdump-tab .action-bar {
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+.hexdump-outer {
+    background-color: var(--background);
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.hexdump {
+    font-family: "Roboto Mono", monospace;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.hexdump .address {
+    color: var(--foreground-secondary);
+}
+
+.hexdump .hex {
+    color: var(--blue);
+}
+
+.hexdump .ascii {
+    color: var(--cyan);
+}
+
+.hexdump .ascii-unprintable {
+    color: var(--foreground-secondary);
+}
+
+.hexdump .outside-annotation {
+    opacity: 0.2;
+}
+
+.hexdump .annotation {
+    color: var(--violet);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.basic-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr); /* contents */
+}
+
+.basic-outer {
+    background-color: var(--background);
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.basic {
+    font-family: "Roboto Mono", monospace;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.basic .basic-error {
+    color: var(--red);
+}
+
+.basic .basic-line-number {
+    color: var(--foreground-secondary);
+}
+
+.basic .basic-punctuation {
+    color: var(--foreground-secondary);
+}
+
+.basic .basic-keyword {
+    color: var(--blue);
+}
+
+.basic .basic-regular {
+    color: var(--foreground);
+}
+
+.basic .basic-string {
+    color: var(--orange);
+}
+
+.basic .basic-comment {
+    color: var(--cyan);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.cmd-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr); /* contents */
+}
+
+.cmd-outer {
+    background-color: var(--background);
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.cmd {
+    font-family: "Roboto Mono", monospace;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.cmd .cmd-error {
+    color: var(--red);
+}
+
+.cmd .cmd-address {
+    color: var(--foreground-secondary);
+}
+
+.cmd .cmd-hex {
+    color: var(--blue);
+}
+
+.cmd .cmd-opcodes {
+    color: var(--cyan);
+}
+
+.cmd .cmd-label {
+    color: var(--orange);
+}
+
+.cmd .cmd-space {
+    color: var(--foreground-secondary);
+}
+
+.cmd .cmd-punctuation {
+    color: var(--foreground-secondary);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.system-program-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr); /* contents */
+}
+
+.system-program-outer {
+    background-color: var(--background);
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.system-program {
+    font-family: "Roboto Mono", monospace;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.system-program .system-program-error,
+.system-program .system-program-highlight {
+    color: var(--red);
+}
+
+.system-program .system-program-address {
+    color: var(--foreground-secondary);
+}
+
+.system-program .system-program-hex {
+    color: var(--blue);
+}
+
+.system-program .system-program-explanation {
+    color: var(--cyan);
+}
+
+.system-program .system-program-entry-point {
+    margin-top: 10px;
+}
+
+.system-program .system-program-screenshot {
+    margin-bottom: 20px;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.disassembly-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr); /* contents */
+}
+
+.disassembly-outer {
+    background-color: var(--background);
+    padding: var(--side-padding);
+
+    display: grid;
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.disassembly {
+    font-family: "Roboto Mono", monospace;
+    overflow-y: auto;
+    white-space: pre;
+}
+
+.disassembly-space {
+    color: var(--foreground-secondary);
+}
+
+.disassembly-label {
+    color: var(--orange);
+}
+
+.disassembly-punctuation {
+    color: var(--foreground-secondary);
+}
+
+.disassembly-address {
+    color: var(--foreground-secondary);
+}
+
+.disassembly-hex {
+    color: var(--blue);
+}
+
+.disassembly-opcodes {
+    color: var(--cyan);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.trsdos-tab {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto; /* contents and action-bar */
+}
+
+.trsdos-tab .action-bar {
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.trsdos {
+    background-color: var(--background);
+    padding: var(--side-padding);
+    overflow-y: auto;
+}
+
+.trsdos .info {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 15px;
+    width: fit-content;
+}
+
+.trsdos .info .label {
+    font-weight: bold;
+    text-align: right;
+    color: var(--cyan);
+}
+
+.trsdos .info .value {
+    color: var(--blue);
+}
+
+.trsdos .info .empty-field {
+    opacity: 30%;
+}
+
+.trsdos .dir {
+    margin-top: 30px;
+    display: grid;
+    width: fit-content;
+    grid-template-columns: auto auto auto auto auto auto;
+    column-gap: 25px;
+    align-items: center;
+}
+
+/* Untested */
+body.signed-out .trsdos .dir {
+    /* Missing import button. Might be easier to disable it. */
+    grid-template-columns: auto auto auto auto auto;
+}
+
+.trsdos .dir .filename {
+    color: var(--magenta);
+}
+
+.trsdos .dir .size {
+    text-align: right;
+    color: var(--cyan);
+}
+
+.trsdos .dir .date {
+    color: var(--blue);
+}
+
+.trsdos .dir .protection-level {
+    color: var(--violet);
+}
+
+.trsdos .dir .run,
+.trsdos .dir .import {
+    cursor: pointer;
+    text-align: center;
+}
+
+.trsdos .dir .header {
+    font-weight: bold;
+    margin-bottom: 6px;
+    padding-bottom: 2px;
+}
+
+.trsdos .dir .filename.header {
+    border-bottom: 1px solid var(--magenta);
+}
+
+.trsdos .dir .size.header {
+    border-bottom: 1px solid var(--cyan);
+}
+
+.trsdos .dir .date.header {
+    border-bottom: 1px solid var(--blue);
+}
+
+.trsdos .dir .protection-level.header {
+    border-bottom: 1px solid var(--violet);
+}
+
+.trsdos .dir .run.header,
+.trsdos .dir .import.header {
+    border-bottom: 1px solid var(--icon-color);
+}
+
+.trsdos .dir .hidden-file {
+    opacity: 30%;
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.duplicates-tab {
+    display: grid;
+    grid-template-rows: 1fr; /* contents */
+
+    background-color: var(--background);
+    padding: var(--side-padding);
+    overflow-y: auto;
+}
+
+.duplicates {
+    display: grid;
+    width: fit-content;
+    grid-template-columns: auto auto auto auto auto;
+    column-gap: 25px;
+    align-items: center;
+    align-content: start;
+}
+
+.duplicates .name {
+    color: var(--magenta);
+}
+
+.duplicates .filename {
+    color: var(--cyan);
+}
+
+.duplicates .type {
+    color: var(--blue);
+}
+
+.duplicates .in-trash {
+    color: var(--violet);
+    text-align: center;
+}
+
+.duplicates .edit {
+    cursor: pointer;
+    text-align: center;
+}
+
+.duplicates .edit.disabled {
+    cursor: default;
+    opacity: 30%;
+}
+
+.duplicates .header {
+    font-weight: bold;
+    margin-bottom: 6px;
+    padding-bottom: 2px;
+}
+
+.duplicates .name.header {
+    border-bottom: 1px solid var(--magenta);
+}
+
+.duplicates .filename.header {
+    border-bottom: 1px solid var(--cyan);
+}
+
+.duplicates .type.header {
+    border-bottom: 1px solid var(--blue);
+}
+
+.duplicates .in-trash.header {
+    border-bottom: 1px solid var(--violet);
+}
+
+.duplicates .edit.header {
+    border-bottom: 1px solid var(--icon-color);
+}
+
+/* ----------------------------------------------------------------------------------------------------- */
+
+.mount-tab {
+    display: grid;
+    grid-template-rows: 1fr; /* contents */
+
+    background-color: var(--background);
+    padding: var(--side-padding);
+    overflow-y: auto;
+}
+
+.mount-contents {
+    .mount-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: fit-content;
+
+        .mount-radio-button {
+            color: var(--foreground);
+            justify-content: flex-start;
+            padding-left: 7px;
+
+            &:hover {
+                background: var(--background-highlights);
+            }
+
+            &:not(.mount-radio-button-selected) .mount-radio-button-dot {
+                color: var(--foreground-secondary);
+            }
+
+            &.mount-radio-button-selected .mount-radio-button-dot {
+                color: var(--red);
+            }
+        }
+    }
+}

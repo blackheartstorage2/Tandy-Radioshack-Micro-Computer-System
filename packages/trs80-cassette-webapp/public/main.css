@@ -1,0 +1,398 @@
+/* Global settings. */
+:root {
+    /* Solarized colors */
+    --base03:    #002b36;
+    --base02:    #073642;
+    --base01:    #586e75;
+    --base00:    #657b83;
+    --base0:     #839496;
+    --base1:     #93a1a1;
+    --base2:     #eee8d5;
+    --base3:     #fdf6e3;
+    --yellow:    #b58900;
+    --orange:    #cb4b16;
+    --red:       #dc322f;
+    --magenta:   #d33682;
+    --violet:    #6c71c4;
+    --blue:      #268bd2;
+    --cyan:      #2aa198;
+    --green:     #859900;
+
+    /* Horizontal margin for screens that are open. */
+    --horiz-margin: 80px;
+}
+.light-mode {
+    --background: var(--base3);
+    --background-highlights: var(--base2);
+    --foreground: var(--base00);
+    --foreground-emphasized: var(--base01);
+    --foreground-secondary: var(--base1);
+    --accent-color: var(--red);
+    --accent-foreground-color: var(--base3);
+}
+.dark-mode {
+    --background: var(--base03);
+    --background-highlights: var(--base02);
+    --foreground: var(--base0);
+    --foreground-emphasized: var(--base1);
+    --foreground-secondary: var(--base01);
+    --accent-color: var(--red);
+    --accent-foreground-color: var(--base3);
+}
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100vh;
+    background-color: var(--background);
+    color: var(--foreground);
+
+    /* For laying out the navbar and the screens. */
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+}
+body, input, textarea {
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 16px;
+}
+textarea, input[type=text] {
+    background-color: var(--background-highlights);
+    color: var(--foreground-emphasized);
+    border: 1px solid var(--foreground-secondary);
+}
+.hidden {
+    display: none !important;
+}
+.gutter {
+    background-color: var(--background-highlights);
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+.gutter.gutter-vertical {
+    cursor: row-resize;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=');
+}
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
+}
+.nice_button {
+    border-radius: 4px;
+    background-color: var(--accent-color);
+    color: var(--accent-foreground-color);
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 4px 0;
+    border: 0;
+}
+/* Nav bar */
+.navbar {
+    flex-grow: 0;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: baseline;
+    background-color: var(--background-highlights);
+    padding: 5px var(--horiz-margin);
+}
+.navbar h1 {
+    font-size: 20pt;
+    font-weight: 100;
+    color: var(--foreground);
+    margin: 0;
+    padding: 0;
+}
+.navbar a {
+    text-decoration: inherit;
+    color: inherit;
+}
+.screens {
+    flex-grow: 1;
+
+    /* Relative position so that .screen can match ours exactly. */
+    position: relative;
+}
+.screen {
+    /* Peg to the position of .screens. */
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+}
+/* Drag and drop (upload) screen. */
+#drop_screen {
+    padding: 30px;
+}
+#drop_screen h1 {
+    text-align: center;
+    font-size: 48pt;
+    font-weight: 100;
+    color: var(--accent-color);
+}
+#drop_zone {
+    display: flex;
+    flex-direction: column;
+    padding: 2em 3em;
+    border: 2px dashed rgba(0, 0, 0, .2);
+    border-radius: 10px;
+    background-color: var(--background-highlights);
+    color: var(--foreground-emphasized);
+    font-size: 24pt;
+    text-align: center;
+    width: 60%;
+    margin: 0 auto;
+}
+#drop_zone.hover {
+    border-color: var(--accent-color);
+}
+#drop_instructions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+#cassette_icon img {
+    max-width: 100px;
+    padding-top: 1em;
+    padding-right: 1em;
+}
+#drop_instructions p {
+    text-align: left;
+}
+#drop_upload {
+}
+#drop_progress {
+    margin: 1em auto;
+}
+.button_group {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin-top: 2em;
+    font-size: 18px;
+}
+.button_group > * {
+    margin: 10px;
+}
+.button_group .nice_button {
+    font-size: 18px;
+}
+#about {
+    text-align: center;
+    color: var(--foreground-secondary);
+    width: 50%;
+    margin: 2em auto;
+}
+#about a {
+    color: var(--foreground-secondary);
+}
+
+#user_data_field {
+    display: block;
+    width: 50%;
+    margin: 20px auto 0 auto;
+}
+
+#export_import .button_group {
+    margin-top: 0;
+}
+
+/* Browse screen. */
+#browse_screen {
+    padding: 20px var(--horiz-margin);
+}
+
+/* Data (main) screen. */
+#data_screen {
+    display: flex;
+}
+#data_screen > nav {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+/* If the binary is identical to a previous copy. */
+.duplicate_copy {
+    opacity: 0.2;
+}
+.tape_contents_row {
+    cursor: default;
+    white-space: pre;
+    font-weight: bold;
+    padding: 3px 10px;
+}
+.tape_contents_row.tape_title {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 300;
+    font-size: 24pt;
+    text-align: center;
+    margin: 0.5em 0;
+    color: var(--accent-color);
+}
+.tape_contents_row.program_title {
+    text-transform: uppercase;
+    padding-top: 0.5em;
+    margin-bottom: 0.2em;
+    color: var(--foreground-emphasized);
+}
+.tape_contents_row.program_title.new_track {
+    margin-top: 0.5em;
+    border-top: 1px solid #888888;
+}
+.tape_contents_row.selectable_row {
+    font-weight: normal;
+}
+.tape_contents_row.selectable_row:hover {
+    background-color: var(--background-highlights);
+    color: var(--foreground-emphasized);
+}
+.tape_contents_row.selected,
+.tape_contents_row.selected.selectable_row:hover {
+    background-color: var(--accent-color);
+    color: var(--accent-foreground-color);
+}
+#data_screen > main {
+    display: flex;
+    flex-direction: column;
+}
+#top_data {
+    /*
+     * This sets this element to not be affected by children. Children can then absolutely position
+     * relative to this one, force their size to match exactly, and overflow with scrollbars.
+     */
+    position: relative;
+}
+#waveforms {
+    overflow-x: auto;
+    overflow-y: scroll;
+    padding: 1em;
+}
+.pane {
+    padding: 10px 20px;
+    overflow-x: auto;
+    overflow-y: scroll;
+    /*
+     * Force our size and position to be exactly equal to the nearest "position: relative"
+     * ancestor, which then allows us to overflow without affecting our parents' sizes.
+     */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+.metadata h1, .system-program h1 {
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-weight: 100;
+    margin-top: 30px;
+}
+.metadata h1:first-of-type, .system-program h1:first-of-type {
+    margin-top: 10px
+}
+.metadata table {
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse;
+}
+.metadata .key {
+    font-weight: bold;
+    padding-left: 0;
+    padding-right: 1em;
+    text-align: right;
+    white-space: nowrap;
+}
+.metadata .key.top {
+    vertical-align: top;
+}
+.metadata .value {
+    padding: 4px 8px;
+    white-space: nowrap;
+}
+.metadata .value > span {
+    padding: 0 6px;
+    white-space: nowrap;
+}
+.metadata .clickable {
+    cursor: pointer;
+    color: var(--blue);
+}
+.metadata .clickable:hover {
+    background-color: var(--background-highlights);
+}
+.metadata td input.name {
+    width: 100%;
+}
+.metadata td textarea.notes {
+    width: 100%;
+}
+.program {
+    font-family: "Roboto Mono", monospace;
+    white-space: pre;
+    cursor: default;
+}
+canvas.waveform {
+    border-radius: 5px;
+}
+.thumbnail {
+    transition: transform 0.1s ease-in-out;
+}
+.thumbnail:hover {
+    transform: scale(1.02);
+}
+
+#test_screen {
+    padding: 50px var(--horiz-margin);
+}
+#test_screen h1 {
+    font-size: 28pt;
+    font-weight: 100;
+    color: var(--accent-color);
+}
+#test_screen h2 {
+    font-size: 18pt;
+    font-weight: 100;
+    color: var(--foreground-emphasized);
+    margin-top: 1em;
+}
+#test_screen .test {
+    margin: 5px 0;
+}
+#test_screen .expandable_panel {
+    display: none;
+    margin: 5px 0 30px 20px;
+}
+#test_screen .test.expanded .expandable_panel {
+    display: block;
+}
+#test_screen .test_header {
+    cursor: pointer;
+}
+#test_screen .test_header::before {
+    content: "▶";
+    display: inline-block;
+    margin-right: 5px;
+    transition: transform 0.15s;
+}
+#test_screen .test.expanded .test_header::before {
+    transform: translate(-2px, 0) rotate(90deg);
+}
+#test_screen .test_result {
+    font-weight: bold;
+    color: var(--background);
+    padding: 2px 10px;
+    /* Use large size to get pill shape. */
+    border-radius: 999px;
+    text-transform: uppercase;
+    margin-left: 10px;
+    letter-spacing: 0.05em;
+}
+#test_screen .test_pass {
+    background-color: var(--green);
+}
+#test_screen .test_fail {
+    background-color: var(--red);
+}
