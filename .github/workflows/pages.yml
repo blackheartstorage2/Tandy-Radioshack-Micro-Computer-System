@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '22'
       - run: npm clean-install
-      - run: npm run build --workspace=packages/my-trs-80
+      - run: npm run build --workspaces
       - uses: actions/upload-pages-artifact@v3
         with:
           path: packages/my-trs-80/dist/
